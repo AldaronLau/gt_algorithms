@@ -1,0 +1,10 @@
+[package]
+name = "gt_algorithms"
+version = "0.1.0"
+authors = [
+	"Jeron Aldaron Lau <jeron.lau@plopgrizzly.tech>",
+	"Rowdy Cash Larson <rowdycash@gmail.com>",
+]
+
+[dependencies]
+rayon = "0.7.0"
