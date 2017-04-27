@@ -1,30 +1,52 @@
 extern crate gt_algorithms;
 extern crate rayon;
 
-use gt_algorithms::{ VertexGraph, EdgeGraph, Edge };
+use gt_algorithms::{ EdgeGraph, Edge };
 use rayon::iter::IntoParallelRefIterator;
 use rayon::prelude::*;
 
+use std::time::{ Instant };
+
 pub fn main() {
-	let cg = EdgeGraph::complete(3).edges;
+	// Time it
+	let now = Instant::now();
+
+	let s = 43;
+	let cg = EdgeGraph::complete(s).edges;
 	let a = cg.par_iter().map(|a| {
 		let string : String = format!("{:?}", a.adjacents);
 		string
 	});
 	let b : Vec<String> = a.collect();
+
+	println!("Edges For {} Vertices: {}", s, Edge::count_for_k(s));
+
 	for i in b {
 		println!("{}", i);
 	}
-	for i in 0..10 {
+/*	for i in 0..10 {
 		let j = i + 1;
 		println!("Edges For {} Vertices: {}", j, Edge::count_for_k(j));
-	}
+	}*/
 
-	let size = 8;
-	let vertexgraph = VertexGraph::complete(size).vertices;
+
+	// Generate & Print Complete Graph
+//	let size = 43;
+
+	// Vertex Graph
+/*	let vertexgraph = VertexGraph::complete(size).vertices;
 	for i in 0..size {
-		println!("Vertices: {:?}", vertexgraph[i].adjacents );
-	}
+		println!("Vertices: {:?}", vertexgraph[i].adjacents);
+	}*/
+
+	// Edge Graph
+/*	let edgegraph = EdgeGraph::complete(size).edges;
+	for i in 0..size {
+		println!("Edges: {:?}", edgegraph[i].adjacents);
+	}*/
+
+	let new = ( now.elapsed().subsec_nanos() as f32 ) / 1_000_000_000.0;
+	println!("Done in {}.", new);
 //		.reduce(
 //			|a| { println!("aa {:?}", a.adjacents); (0, 0) },
 //			|a, b| {});
