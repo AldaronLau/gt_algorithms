@@ -1,3 +1,6 @@
+use rayon::iter::IntoParallelRefIterator;
+use rayon::prelude::*;
+
 use VertexGraph;
 use Edge;
 use UNCOLORED;
@@ -51,5 +54,25 @@ impl EdgeGraph {
 		}
 
 		EdgeGraph { edges: edges }
+	}
+
+	pub fn export(&self) -> String {
+		let a = self.edges.par_iter().map(|a| {
+			let color = if a.color == UNCOLORED { 'a' } else { a.color };
+			let mut string : String = format!("{}:", color);
+			let len = a.adjacents.len() - 1;
+			for i in 0..len {
+				string.push_str(format!("{} ", a.adjacents[i]).as_str());
+			}
+			string.push_str(format!("{},", a.adjacents[len]).as_str());
+			string
+		});
+		let b : Vec<String> = a.collect();
+		let mut c = "".to_string();
+		for i in b {
+			c.push_str(i.as_str());
+		}
+		c.pop();
+		c
 	}
 }

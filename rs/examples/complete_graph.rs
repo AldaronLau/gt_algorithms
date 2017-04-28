@@ -1,9 +1,9 @@
 extern crate gt_algorithms;
 extern crate rayon;
 
-use gt_algorithms::{ EdgeGraph, Edge };
-use rayon::iter::IntoParallelRefIterator;
-use rayon::prelude::*;
+use gt_algorithms::{ EdgeGraph /*, Edge*/ };
+use std::fs::File;
+use std::io::prelude::*;
 
 use std::time::{ Instant };
 
@@ -12,8 +12,15 @@ pub fn main() {
 	let now = Instant::now();
 
 	let s = 43;
-	let cg = EdgeGraph::complete(s).edges;
-	let a = cg.par_iter().map(|a| {
+	let cg = EdgeGraph::complete(s);//.edges;
+	let graph_file = cg.export();
+
+	println!("{}", graph_file);
+
+	let mut file = File::create(format!("cg{}.text", s)).unwrap();
+	file.write_all(graph_file.as_bytes()).unwrap();
+
+/*	let a = cg.par_iter().map(|a| {
 		let string : String = format!("{:?}", a.adjacents);
 		string
 	});
@@ -23,7 +30,9 @@ pub fn main() {
 
 	for i in b {
 		println!("{}", i);
-	}
+	}*/
+
+
 /*	for i in 0..10 {
 		let j = i + 1;
 		println!("Edges For {} Vertices: {}", j, Edge::count_for_k(j));
