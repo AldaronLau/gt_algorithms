@@ -16,8 +16,7 @@ pub fn print_enabled() {
             println!("SIMD Enabled");
             return;
         }
-        println!("SIMD Not Supported (no avx2)");
-        return;
+        panic!("SIMD Not Supported (no avx2)");
     }
     #[cfg(not(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd")))]
     {
@@ -29,9 +28,7 @@ pub fn print_enabled() {
 pub fn simd_and(a: [u64; 32], b: [u64; 32], v: usize) -> [u64; 32] {
     #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
     {
-        if is_simd_enabled() {
-            return simd_and_x86(a, b, v);
-        }
+        return simd_and_x86(a, b, v);
     }
     simd_and_fallback(a, b, v)
 }
@@ -40,9 +37,7 @@ pub fn simd_and(a: [u64; 32], b: [u64; 32], v: usize) -> [u64; 32] {
 pub fn simd_eq(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
     #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
     {
-        if is_simd_enabled() {
-            return simd_eq_x86(a, b, v);
-        }
+        return simd_eq_x86(a, b, v);
     }
     simd_eq_fallback(a, b, v)
 }
@@ -51,9 +46,7 @@ pub fn simd_eq(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
 pub fn simd_and_eq_zero(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
     #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
     {
-        if is_simd_enabled() {
-            return unsafe { simd_and_eq_zero_x86(a, b, v) };
-        }
+        return unsafe { simd_and_eq_zero_x86(a, b, v) };
     }
     simd_and_eq_zero_fallback(a, b, v)
 }
@@ -62,9 +55,7 @@ pub fn simd_and_eq_zero(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
 pub fn simd_and_eq(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
     #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
     {
-        if is_simd_enabled() {
-            return unsafe { simd_and_eq_x86(a, b, v) };
-        }
+        return unsafe { simd_and_eq_x86(a, b, v) };
     }
     simd_and_eq_fallback(a, b, v)
 }
