@@ -198,13 +198,6 @@ impl Graph {
     /// the same value for `n`.
     #[inline(always)]
     pub fn find_cliques(&self, prcs: &Vec<BitString>, pbcs: &Vec<BitString>) -> (bool, bool) {
-/*        println!(
-            "K{} Searching for {} possible red clique(s) and for {} possible blue clique(s)",
-            self.vertices,
-            prcs.len(),
-            pbcs.len()
-        );*/
-
         let gc = self.colors;
 
         let mut has_red = false;
@@ -214,23 +207,18 @@ impl Graph {
         for pc in prcs {
             if simd_and_eq(pc.0, gc, self.edges) {
                 // We have a RED Clique of 3 Vertices.
-                //println!("Found a Red Clique!");
                 has_red = true;
                 break;
             }
         }
 
         for pc in pbcs {
-            let c = simd_and(pc.0, gc, self.edges);
-            if simd_is_zero(c, self.edges) {
-                //println!("Found a Blue Clique!");
+            if simd_and_eq_zero(pc.0, gc, self.edges) {
                 // We have a BLUE Clique of 3 Vertices.
                 has_blue = true;
                 break;
             }
         }
-
-        //        dbg!((has_red, has_blue));
 
         (has_red, has_blue)
     }
