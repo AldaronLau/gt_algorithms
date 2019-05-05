@@ -212,8 +212,7 @@ impl Graph {
 
         // Check for RED Cliques of size r.
         for pc in prcs {
-            let c = simd_and(pc.0, gc, self.edges);
-            if simd_eq(c, pc.0, self.edges) {
+            if simd_and_eq(pc.0, gc, self.edges) {
                 // We have a RED Clique of 3 Vertices.
                 //println!("Found a Red Clique!");
                 has_red = true;

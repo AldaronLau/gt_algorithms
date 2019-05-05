@@ -1,7 +1,7 @@
 use gt_algorithms::*;
 
-const R: usize = 2;
-const S: usize = 7;
+const R: usize = 3;
+const S: usize = 3;
 
 fn main() {
     // Print whether or not we have SIMD
