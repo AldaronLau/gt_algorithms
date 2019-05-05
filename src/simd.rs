@@ -73,8 +73,8 @@ fn simd_and_x86(a: [u64; 32], b: [u64; 32], v: usize) -> [u64; 32] {
         for i in 0..8 {
             let j = i << 2; // multiply by 4.
             // Build SIMD types.
-            let c = asm::_mm256_loadu_si256(&a[j] as *const _ as *const _);
-            let d = asm::_mm256_loadu_si256(&b[j] as *const _ as *const _);
+            let c = asm::_mm256_load_si256(&a[j] as *const _ as *const _);
+            let d = asm::_mm256_load_si256(&b[j] as *const _ as *const _);
             // And The Values together.
             let e = asm::_mm256_and_si256(c, d);
             // Write back to a
@@ -104,8 +104,8 @@ unsafe fn simd_and_eq_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
     let v = (v + 15) >> 4; // SHR 4 = DIV 16
     for i in (0..v).step_by(4) {
         // Build SIMD types.
-        let a = asm::_mm256_loadu_si256(&a[i] as *const _ as *const _);
-        let mut b = asm::_mm256_loadu_si256(&b[i] as *const _ as *const _);
+        let a = asm::_mm256_load_si256(&a[i] as *const _ as *const _);
+        let mut b = asm::_mm256_load_si256(&b[i] as *const _ as *const _);
         // Will be zero when equal.
         b = asm::_mm256_xor_si256(a, b);
         // And, then compare.  If `c` does not equal zero, return false.
@@ -152,8 +152,8 @@ unsafe fn simd_and_eq_zero_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
     let v = (v + 15) >> 4; // SHR 4 = DIV 16
     for i in (0..v).step_by(4) {
         // Build SIMD types.
-        let a = asm::_mm256_loadu_si256(&a[i] as *const _ as *const _);
-        let b = asm::_mm256_loadu_si256(&b[i] as *const _ as *const _);
+        let a = asm::_mm256_load_si256(&a[i] as *const _ as *const _);
+        let b = asm::_mm256_load_si256(&b[i] as *const _ as *const _);
         // And, then compare.  If `c` does not equal zero, return false.
         if asm::_mm256_testz_si256(b, a) == 0 {
             return false;
@@ -211,12 +211,12 @@ fn simd_eq_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
         for i in 0..8 {
             let j = i << 2; // multiply by 4.
             // Build SIMD types.
-            let aa = asm::_mm256_loadu_si256(&a[j] as *const _ as *const _);
-            let bb = asm::_mm256_loadu_si256(&b[j] as *const _ as *const _);
+            let aa = asm::_mm256_load_si256(&a[j] as *const _ as *const _);
+            let bb = asm::_mm256_load_si256(&b[j] as *const _ as *const _);
             // Will be zero when equal.
             let c = asm::_mm256_xor_si256(aa, bb);
 
-            let mask = asm::_mm256_loadu_si256(&mask[i * 4] as *const _ as *const _);
+            let mask = asm::_mm256_load_si256(&mask[i * 4] as *const _ as *const _);
 
             // If `c` does not equal zero, return false.
             if asm::_mm256_testz_si256(c, mask) == 0 {

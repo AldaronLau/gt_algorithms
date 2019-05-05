@@ -8,13 +8,14 @@ pub struct BitString([u64; 32]);
 
 /// A complete graph colored with red and blue edges.
 #[derive(Clone)]
+#[repr(align(64), C)]
 pub struct Graph {
+    // Bitstring of relations between vertices.
+    colors: [u64; 32],
     // Number of vertices in the graph.
     vertices: usize,
     // Number of edges in the graph.
     edges: usize,
-    // Bitstring of relations between vertices.
-    colors: [u64; 32],
 }
 
 impl Graph {
