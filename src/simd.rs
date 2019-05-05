@@ -99,14 +99,14 @@ fn simd_and_fallback(mut a: [u64; 32], b: [u64; 32], _v: usize) -> [u64; 32] {
 
 #[target_feature(enable = "avx,avx2,sse4.1")]
 unsafe fn simd_and_eq_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
-    // Build the Mask from V.
+/*    // Build the Mask from V.
     let mut mask = [0x0u64; 32];
     let mask_index = v >> 6;
     let mask_last = 0xFFFFFFFF_FFFFFFFF >> (64 - (v & 63));
     for i in 0..mask_index {
         mask[i] = 0xFFFFFFFF_FFFFFFFF;
     }
-    mask[mask_index] = mask_last;
+    mask[mask_index] = mask_last;*/
 
     for i in 0..8 {
         let j = i << 2; // multiply by 4.
@@ -114,14 +114,14 @@ unsafe fn simd_and_eq_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
         let a = asm::_mm256_loadu_si256(&a[j] as *const _ as *const _);
         let mut b = asm::_mm256_loadu_si256(&b[j] as *const _ as *const _);
         // And The Values together.
-        b = asm::_mm256_and_si256(a, b);
+        // b = asm::_mm256_and_si256(a, b);
         // Will be zero when equal.
-        let c = asm::_mm256_xor_si256(a, b);
+        b = asm::_mm256_xor_si256(a, b);
 
-        let mask = asm::_mm256_loadu_si256(&mask[i * 4] as *const _ as *const _);
+//        let mask = asm::_mm256_loadu_si256(&mask[i * 4] as *const _ as *const _);
 
         // If `c` does not equal zero, return false.
-        if asm::_mm256_testz_si256(c, mask) == 0 {
+        if asm::_mm256_testz_si256(b, a) == 0 {
             return false;
         }
     }
