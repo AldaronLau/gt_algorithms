@@ -1,4 +1,5 @@
 # Graph Theory Algorithms ( gt_algorithms )
+Graph theory algorithms in Rust.
 
 ## Edge File Format
 Edges are listed in order starting at index 0.  The first character of an edge defines it's color: a or b.  After the color there is a colon.  Adjacent edges are listed after the colon, separated by spaces.  Edges are separated by commas.
