@@ -24,7 +24,7 @@ pub fn print_enabled() {
 
 /// Check if `0 = (a & b)` for `v * 256` edges.
 #[inline(always)]
-pub fn simd_and_eq_zero(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
+pub fn simd_and_eq_zero(a: &[u64; 32], b: &[u64; 32], v: usize) -> bool {
     #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
     unsafe {
         simd_and_eq_zero_x86(a, b, v)
@@ -37,7 +37,7 @@ pub fn simd_and_eq_zero(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
 
 /// Check if `a = (a & b)` for `v * 256` edges.
 #[inline(always)]
-pub fn simd_and_eq(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
+pub fn simd_and_eq(a: &[u64; 32], b: &[u64; 32], v: usize) -> bool {
     #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
     unsafe {
         simd_and_eq_x86(a, b, v)
@@ -50,7 +50,7 @@ pub fn simd_and_eq(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
 
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
 #[target_feature(enable = "avx,avx2,sse4.1")]
-unsafe fn simd_and_eq_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
+unsafe fn simd_and_eq_x86(a: &[u64; 32], b: &[u64; 32], v: usize) -> bool {
     for i in (0..v).step_by(4) {
         // Build SIMD types.
         let a = asm::_mm256_lddqu_si256(&a[i] as *const _ as *const _);
@@ -68,7 +68,7 @@ unsafe fn simd_and_eq_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
 
 /// And, then equals.
 #[cfg(not(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd")))]
-fn simd_and_eq_fallback(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
+fn simd_and_eq_fallback(a: &[u64; 32], b: &[u64; 32], v: usize) -> bool {
     let integers = v * 4;
 
     for i in 0..32 {
@@ -91,7 +91,7 @@ fn simd_and_eq_fallback(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
 
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
 #[target_feature(enable = "avx,avx2,sse4.1")]
-unsafe fn simd_and_eq_zero_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
+unsafe fn simd_and_eq_zero_x86(a: &[u64; 32], b: &[u64; 32], v: usize) -> bool {
     for i in (0..v).step_by(4) {
         // Build SIMD types.
         let a = asm::_mm256_lddqu_si256(&a[i] as *const _ as *const _);
@@ -107,7 +107,7 @@ unsafe fn simd_and_eq_zero_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
 
 /// And, then equals.
 #[cfg(not(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd")))]
-fn simd_and_eq_zero_fallback(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
+fn simd_and_eq_zero_fallback(a: &[u64; 32], b: &[u64; 32], v: usize) -> bool {
     let integers = v * 4;
 
     for i in 0..32 {

@@ -5,8 +5,8 @@ use criterion::Criterion;
 use gt_algorithms::*;
 
 fn r26(c: &mut Criterion) {
-    c.bench_function("R(2,6)", |b| b.iter(|| {
-        let _ = ramsey(2, 6);
+    c.bench_function("R(3,3)", |b| b.iter(|| {
+        let _ = ramsey(3, 3);
     }));
 }
 

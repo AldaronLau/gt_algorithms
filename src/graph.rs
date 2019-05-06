@@ -207,7 +207,7 @@ impl Graph {
 
         // Check for RED Cliques of size r.
         for pc in prcs {
-            if simd_and_eq(pc.0, gc, ni) {
+            if simd_and_eq(&pc.0, &gc, ni) {
                 // We have a RED Clique of 3 Vertices.
                 has_red = true;
                 break;
@@ -215,7 +215,7 @@ impl Graph {
         }
 
         for pc in pbcs {
-            if simd_and_eq_zero(pc.0, gc, ni) {
+            if simd_and_eq_zero(&pc.0, &gc, ni) {
                 // We have a BLUE Clique of 3 Vertices.
                 has_blue = true;
                 break;
