@@ -1,3 +1,5 @@
+// NOTE: This module is deprecated.
+
 use std::arch::x86_64 as asm;
 
 pub fn is_simd_enabled() -> bool {

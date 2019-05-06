@@ -5,10 +5,10 @@
 
 mod graph;
 mod ramsey;
-mod simd;
+mod and_eq;
 
 // use rayon::prelude::*;
 
 pub use graph::{add, next, Graph, MAX_GRAPH_VERTICES};
 pub use ramsey::ramsey;
-pub use simd::{print_enabled, simd_and_eq, simd_and_eq_zero, i256};
+pub use and_eq::{print_enabled, simd_and_eq, simd_and_eq_zero, i256};

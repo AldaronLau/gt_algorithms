@@ -200,13 +200,14 @@ impl Graph {
     #[inline(always)]
     pub fn find_cliques(&self, prcs: &Vec<BitString>, pbcs: &Vec<BitString>) -> (bool, bool) {
         let gc = self.colors;
+        let ni = (self.edges + 15) >> 4;
 
         let mut has_red = false;
         let mut has_blue = false;
 
         // Check for RED Cliques of size r.
         for pc in prcs {
-            if simd_and_eq(pc.0, gc, self.edges) {
+            if simd_and_eq(pc.0, gc, ni) {
                 // We have a RED Clique of 3 Vertices.
                 has_red = true;
                 break;
@@ -214,7 +215,7 @@ impl Graph {
         }
 
         for pc in pbcs {
-            if simd_and_eq_zero(pc.0, gc, self.edges) {
+            if simd_and_eq_zero(pc.0, gc, ni) {
                 // We have a BLUE Clique of 3 Vertices.
                 has_blue = true;
                 break;
