@@ -1,18 +1,16 @@
 use std::arch::x86_64 as asm;
 
-pub fn is_simd_enabled() -> bool {
-    is_x86_feature_detected!("avx") && is_x86_feature_detected!("avx2")
-        && is_x86_feature_detected!("sse4.1")
-}
-
 // A type that is four 64 bit integers packed together (256 bits).
 pub use asm::__m256i as i256;
 
 /// Print whether or not SIMD is enabled.
+#[inline(always)]
 pub fn print_enabled() {
     #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
     {
-        if is_simd_enabled() {
+        if is_x86_feature_detected!("avx") && is_x86_feature_detected!("avx2")
+            && is_x86_feature_detected!("sse4.1")
+        {
             println!("SIMD Enabled");
             return;
         }
@@ -50,6 +48,7 @@ pub fn simd_and_eq(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
     }
 }
 
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
 #[target_feature(enable = "avx,avx2,sse4.1")]
 unsafe fn simd_and_eq_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
     for i in (0..v).step_by(4) {
@@ -69,23 +68,15 @@ unsafe fn simd_and_eq_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
 
 /// And, then equals.
 #[cfg(not(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd")))]
-fn simd_and_eq_fallback(a: [u64; 32], mut b: [u64; 32], v: usize) -> bool {
-    for i in 0..32 {
-        b[i] &= a[i];
-    }
-
-    let integers = v / 64;
-    let bitsleft = v % 64;
+fn simd_and_eq_fallback(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
+    let integers = v * 4;
 
     for i in 0..32 {
         // Will be zero when equal.
-        let c = a[i] ^ b[i];
+        let c = a[i] ^ (b[i] & a[i]);
 
         if i == integers {
-            let one = 0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111u64;
-            let trim = one >> (64 - bitsleft);
-
-            if c & trim != 0 {
+            if c != 0 {
                 return false;
             } else {
                 return true;
@@ -98,6 +89,7 @@ fn simd_and_eq_fallback(a: [u64; 32], mut b: [u64; 32], v: usize) -> bool {
     return true;
 }
 
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
 #[target_feature(enable = "avx,avx2,sse4.1")]
 unsafe fn simd_and_eq_zero_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
     for i in (0..v).step_by(4) {
@@ -115,23 +107,15 @@ unsafe fn simd_and_eq_zero_x86(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
 
 /// And, then equals.
 #[cfg(not(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd")))]
-fn simd_and_eq_zero_fallback(a: [u64; 32], mut b: [u64; 32], v: usize) -> bool {
-    for i in 0..32 {
-        b[i] &= a[i];
-    }
-
-    let integers = v / 64;
-    let bitsleft = v % 64;
+fn simd_and_eq_zero_fallback(a: [u64; 32], b: [u64; 32], v: usize) -> bool {
+    let integers = v * 4;
 
     for i in 0..32 {
         // Will be zero when equal.
-        let c = 0 ^ b[i];
+        let c = 0 ^ (b[i] & a[i]);
 
         if i == integers {
-            let one = 0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111u64;
-            let trim = one >> (64 - bitsleft);
-
-            if c & trim != 0 {
+            if c != 0 {
                 return false;
             } else {
                 return true;
