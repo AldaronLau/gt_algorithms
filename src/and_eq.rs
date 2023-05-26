@@ -8,7 +8,8 @@ pub use asm::__m256i as i256;
 pub fn print_enabled() {
     #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "use-simd"))]
     {
-        if is_x86_feature_detected!("avx") && is_x86_feature_detected!("avx2")
+        if is_x86_feature_detected!("avx")
+            && is_x86_feature_detected!("avx2")
             && is_x86_feature_detected!("sse4.1")
         {
             println!("SIMD Enabled");
@@ -63,7 +64,7 @@ unsafe fn simd_and_eq_x86(a: &[u64; 32], b: &[u64; 32], v: usize) -> bool {
         }
     }
 
-    return true;
+    true
 }
 
 /// And, then equals.
@@ -102,7 +103,7 @@ unsafe fn simd_and_eq_zero_x86(a: &[u64; 32], b: &[u64; 32], v: usize) -> bool {
         }
     }
 
-    return true;
+    true
 }
 
 /// And, then equals.
@@ -125,5 +126,5 @@ fn simd_and_eq_zero_fallback(a: &[u64; 32], b: &[u64; 32], v: usize) -> bool {
         }
     }
 
-    return true;
+    true
 }

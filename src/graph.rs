@@ -42,12 +42,12 @@ impl Graph {
 
         // Build all of the edges.
         for vertex_a in 0..vertices.len() {
-            if vertices[vertex_a] == false {
+            if vertices[vertex_a] == FALSE {
                 continue;
             }
 
             for vertex_b in 0..vertices.len() {
-                if vertices[vertex_b] == false || vertex_a == vertex_b {
+                if vertices[vertex_b] == FALSE || vertex_a == vertex_b {
                     continue;
                 }
 
@@ -164,7 +164,7 @@ impl Graph {
             return vec![];
         }
 
-//        dbg!(self.n_vertices());
+        //        dbg!(self.n_vertices());
 
         let mut returnv = vec![];
         let mut current = vec![false; self.n_vertices()];
@@ -228,11 +228,11 @@ impl Graph {
 
 /// Add a vertex to a clique.
 pub fn add(current: &mut [bool]) {
-    for i in 0..current.len() {
-        if current[i] {
+    for color in current.iter_mut() {
+        if *color {
             continue;
         }
-        current[i] = true;
+        *color = true;
         break;
     }
 }
@@ -246,7 +246,7 @@ pub fn next(which_vertices: &mut [bool]) -> bool {
 
     loop {
         index -= 1;
-        if which_vertices[index] == false {
+        if which_vertices[index] == FALSE {
             found_zero = true;
         }
         // The one after a zero.

@@ -6,11 +6,11 @@ fn graph_consistency() {
     for i in 0..MAX_GRAPH_VERTICES {
         dbg!(i);
 
-        assert_eq!(graph.get(i), false);
+        assert_eq!(graph.get(i), FALSE);
         graph.set_one(i);
-        assert_eq!(graph.get(i), true);
+        assert_eq!(graph.get(i), TRUE);
         graph.set_zero(i);
-        assert_eq!(graph.get(i), false);
+        assert_eq!(graph.get(i), FALSE);
     }
 }
 

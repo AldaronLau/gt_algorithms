@@ -7,7 +7,7 @@ pub fn ramsey(r: usize, s: usize) -> usize {
     let mut rcliques;
     let mut scliques;
 
-    'sizes: loop {
+    loop {
         // let edges = (nvertices * (nvertices - 1)) >> 1;
         // dbg!((nvertices, edges));
         // dbg!(edges);
